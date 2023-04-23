@@ -15,9 +15,9 @@ function RenderImage()
                 for(let y = 0; y < returnjson.h; y++)
                 {
                     calculator.setExpression({id: x + "x" + y, latex: returnjson.pixels[x * returnjson.h + y], fillOpacity: 1, color: returnjson.colors[x * returnjson.h + y]});
-                    console.log("b")
                 }
             }
+            console.log("done")
         })
     }, 33.33333333);
 }
@@ -34,8 +34,8 @@ function once()
                 for(let y = 0; y < returnjson.h; y++)
                 {
                     calculator.setExpression({id: x + "x" + y, latex: returnjson.pixels[x * returnjson.h + y], fillOpacity: 1, color: returnjson.colors[x * returnjson.h + y]});
-                    console.log("b")
                 }
             }
+            console.log("done")
         })
 }

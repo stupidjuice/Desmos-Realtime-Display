@@ -8,8 +8,8 @@ from flask_cors import CORS
 MONITOR_WIDTH = 2560 #set to your monitor resolution
 MONITOR_HEIGHT = 1440
 
-RESIZE_WIDTH = 32 #set to the resoultion you want in desmos (dont set this too high!!!!)
-RESIZE_HEIGHT = 18
+RESIZE_WIDTH = 16 #set to the resoultion you want in desmos (dont set this too high!!!!)
+RESIZE_HEIGHT = 9   
 
 GRAPH_SCALE = 0.5 #resizes the graph because for some reason zooming out too much makes the pixels go woowoooowoowoooo
 
@@ -17,7 +17,8 @@ app = Flask(__name__)
 CORS(app)
 
 def GetLatex(left, right, top, bottom):
-    return("y<" + str(top) + "\\left\\{" + str(left) + "<x<" + str(right) +"\\right\\}\\left\\{" + str(bottom) + "<y<" + str(top) + "\\right\\}")
+    #return("y<" + str(top) + "\\left\\{" + str(left) + "<x<" + str(right) +"\\right\\}\\left\\{" + str(bottom) + "<y<" + str(top) + "\\right\\}")
+    return "\\operatorname{polygon}((" + str(left) + "," + str(top) + "), (" + str(left) + "," + str(bottom) + "), (" + str(right) + "," + str(bottom) + "), (" + str(right) + "," + str(top) + "))"
 
 @app.route("/RenderImage")
 def RenderImage():
@@ -35,17 +36,19 @@ def RenderImage():
         yb = 0
         for y in x:
             yb += 1
-            currentHex = "#"
-            for rgb in list(y):
-                if(rgb < 16):
-                    currentHex += "0" + hex(rgb)[2:]
+            currentHex = ""
+
+            listy = list(y)
+            for i in range(len(listy)):
+                if(listy[3-i] < 16):
+                    currentHex += "0" + hex(listy[3-i])[2:]
                 else:
-                    currentHex += hex(rgb)[2:]
+                    currentHex += hex(listy[3-i])[2:]
                 
-            screenshotHex.append(currentHex[:-2])
+            screenshotHex.append("#" + currentHex[2:])
             pixels.append(GetLatex(yb, yb+1, xb+1, xb))
 
-    print(screenshotHex)
+            print(str(y) + currentHex)
     return jsonify({"pixelCount": len(pixels), "pixels": pixels, "colors": screenshotHex, "w": RESIZE_WIDTH, "h": RESIZE_HEIGHT, "scale": GRAPH_SCALE})
 
 if __name__ == "__main__":
